@@ -6,14 +6,15 @@
 #include "scene.h"
 #include "callback.h"
 
-int main(int argc,char *argv[]){
+int main(int argc,char *argv[])
+{
 
   /*Inicijalizacija GLUT-a*/
   glutInit(&argc,argv);
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
   /*Kreira se prozor*/
-  glutInitWindowSize(1000,700);
+  glutInitWindowSize(700,700);
   glutInitWindowPosition(100,100);
   glutCreateWindow("Moorhuhn");
 
@@ -30,32 +31,56 @@ int main(int argc,char *argv[]){
     srand(time(NULL));
     int index;
     for(index = 0;index < CHICKEN_MAX;index++){
-      chickens[index].chickenSize = 0.5;
-      chickens[index].xCurr = 4.0*((float)rand()/RAND_MAX);
+      chickens[index].xCurr = (float)getRand(-5,5);
       chickens[index].yCurr = 0.3*((float)rand()/RAND_MAX);
-      chickens[index].zCurr = (float)rand()/(float)RAND_MAX;
-      chickens[index].rotate = 30.0;
+      chickens[index].zCurr = (float)getRand(-30,0);
       chickens[index].alive = 0;
+      chickens[index].activeDeadChicken = 0;
+      chickens[index].tex  = SOIL_load_OGL_texture
+         (
+             "kart1.dds",
+             SOIL_LOAD_AUTO,
+             SOIL_CREATE_NEW_ID,
+             SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+         );
+		 	chickens[index].texDead = SOIL_load_OGL_texture
+         (
+             "Dead.png",
+             SOIL_LOAD_AUTO,
+             SOIL_CREATE_NEW_ID,
+             SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+         );
     }
+
   }
 
   /*inicijalizacija metaka*/
   {
     int index;
     for(index = 0;index < BULLET_MAX; index++){
-      bullets[index].bulletSize = 0.05;
-      bullets[index].xPos = 4.0;
-      bullets[index].yPos = 0.5;
-      bullets[index].zPos = 9.0;
-      bullets[index].active = 0;
+      bullets[index].bulletSize = 0.08;
+			bullets[index].alive = 0;
+			bullets[index].xPos = 0.0;
+			bullets[index].yPos = 0.5;
+			bullets[index].zPos = 8.0;
     }
   }
 
+	/*inicijalizacija oblaka*/
+	{
+		 texCloud = SOIL_load_OGL_texture
+				(
+						"cloud3.png",
+						SOIL_LOAD_AUTO,
+						SOIL_CREATE_NEW_ID,
+						SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+				);
+		}
+
   /*OpenGl inicijalizacija*/
   glClearColor(0.6,0.8,0.9,1);
+  /* Ukljucuje se testiranje z-koordinate piksela. */
   glEnable(GL_DEPTH_TEST);
-
-  glutTimerFunc(TIMER_CHICKEN,chickenTimer,TIMER_ID_CHICKEN);
 
   /*Program ulazi u glavnu petlju*/
   glutMainLoop();
@@ -63,7 +88,8 @@ int main(int argc,char *argv[]){
   return 0;
 }
 
-static void onKeyboard(unsigned char key,int x,int y){
+static void onKeyboard(unsigned char key,int x,int y)
+{
   switch(key){
     case 27:
       /*Zavrsava se igra*/
@@ -71,26 +97,33 @@ static void onKeyboard(unsigned char key,int x,int y){
       break;
     /*ugao za koji pomeramo top*/
     case 'a':
-      angle -= 3.0f;
-      glutPostRedisplay();
+    case 'A':
+      angleLR += 1.5f;
       break;
     case 'd':
-      angle += 3.0f;
-      glutPostRedisplay();
+    case 'D':
+      angleLR -= 1.5f;
+      break;
+    case 's':
+    case 'S':
+      angleTB -= 0.5f;
+      break;
+    case 'w':
+    case 'W':
+      angleTB += 0.5f;
       break;
     /*ispaljujemo metke*/
-    case 'f':
-    case 'F':
+    case 32:
     /* Trazimo prvi slobodan slot u kome mozemo da zapamtimo
      * novi metak */
       {
         int i,run = 1;
         for (i=0;run && (i<BULLET_MAX);i++){
-          if(!bullets[i].active){
-            bullets[i].active = 1;
-            bullets[i].xPos = 4.0;
-            bullets[i].yPos = 0.5;
-            bullets[i].zPos = 9.0;
+          if(!bullets[i].alive){
+						bullets[i].alive = 1;
+						bullets[i].xPos = 0.0;
+						bullets[i].yPos = 0.5;
+						bullets[i].zPos = 8.0;
             run = 0;
           }
         }
@@ -101,11 +134,12 @@ static void onKeyboard(unsigned char key,int x,int y){
       /*Startujemo igru*/
       if(!animationOnGoing){
         animationOnGoing = 1;
+        glutTimerFunc(TIMER_CHICKEN,chickenTimer,TIMER_ID_CHICKEN);
         glutTimerFunc(TIMER_INTERVAL,onTimer,TIMER_ID);
       }
       break;
-    case 's':
-    case 'S':
+    case 'p':
+    case 'P':
       /*Pauza */
       animationOnGoing = 0;
       break;
@@ -115,38 +149,42 @@ static void onKeyboard(unsigned char key,int x,int y){
 void onTimer(int id)
 {
     if(TIMER_ID == id){
-      int i,j;
-      for(i=0;i<CHICKEN_MAX;i++){
-          if(chickens[i].alive){
-            chickens[i].zCurr += 0.1;
-            if(chickens[i].zCurr >= 10.0){
-              chickens[i].alive = 0;
-            }
-          }
-      }
-      for(j=0;j<BULLET_MAX;j++){
-          if(bullets[j].active){
-            bullets[j].zPos -= 0.1;
-            /*bullets[j].yPos += 0.005;*/
-            bullets[j].xPos += angle/1000;
-            if(bullets[j].zPos <= 7.0){
-              bullets[j].active = 0;
+      int index,i;
+			/*pomeramo kokoske*/
+      for(index=0;index<CHICKEN_MAX;index++){
+          if(chickens[index].alive){
+              chickens[index].zCurr += 0.1;
+            if(chickens[index].zCurr >= 10.0){
+              chickens[index].alive = 0;
             }
           }
       }
 
-      /*TODO napravi eksploziju,i popraviti kretanje metkica,i samu koliziju*/
+			/*pomeramo metke*/
+      for(i=0;i<BULLET_MAX;i++){
+				if(bullets[i].alive){
+						bullets[i].xPos -= angleLR/1000;
+						bullets[i].yPos += angleTB/1000;
+						bullets[i].zPos -= 0.1;
+          if(bullets[i].zPos <= -20.0){
+              bullets[i].alive = 0;
+          }
+				}
+      }
+
+			/*proveravamo da li je metak pogodio kokosku*/
       bulletChickenCollision();
+    }
 
       glutPostRedisplay();
 
       if (animationOnGoing) {
           glutTimerFunc(TIMER_INTERVAL, onTimer, TIMER_ID);
       }
-    }
 }
 
-void chickenTimer(int id){
+void chickenTimer(int id)
+{
     if(TIMER_ID_CHICKEN == id){
 
       chickenIndex++;
@@ -160,7 +198,8 @@ void chickenTimer(int id){
     }
 }
 
-static void onReshape(int width, int height){
+static void onReshape(int width, int height)
+{
   /*Podesava se viewport*/
   glViewport(0,0,width,height);
 
@@ -168,10 +207,10 @@ static void onReshape(int width, int height){
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(60, width/(float)height,1,1000);
-
 }
 
-static void onDisplay(void){
+static void onDisplay(void)
+{
 
   /*Brise se prethodni sadrzaj prozora*/
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -187,12 +226,20 @@ static void onDisplay(void){
   /*Iscrtava se postolje*/
   ground();
 
+	/*funkcija koja crta oblake*/
+	drawCloud();
+
   int count;
   for(count=1;count<=chickenIndex;count++){
+		/*crtaju se kokoske*/
     drawChicken(count);
-    /*if(chickens[count].zCurr > 6.0){
+    if(chickens[count].alive == 0){
+			/*crta se mrtva koka*/
+      dead(chickens[count]);
+    }
+    /*if(chickens[count].zCurr > 9.0){
       animationOnGoing = 0;
-      chickens[count].zCurr = 6.0;
+      chickens[count].zCurr = 8.0;
       chickens[count].alive = 0;
       die();
     }*/
@@ -200,8 +247,8 @@ static void onDisplay(void){
 
   /*TODO dodati jos objekata za ubijanje*/
 
-  drawGun(angle);
-  drawBullets(angle);
+  drawGun(angleLR,angleTB);
+  drawBullets();
 
   /*TODO postaviti score*/
   renderBitmapString(-5,5,GLUT_BITMAP_9_BY_15,"Score:0",1.0,1.0,1.0);
@@ -210,7 +257,13 @@ static void onDisplay(void){
   glutSwapBuffers();
 }
 
-void renderBitmapString(float x, float y, void *font,const char *string,float r,float g, float b){
+int getRand(int min,int max)
+{
+	  return(rand()%(max-min)+min);
+}
+
+void renderBitmapString(float x, float y, void *font,const char *string,float r,float g, float b)
+{
   glColor3f(r,g,b);
   glRasterPos2f(x, y);
   glutBitmapString(font,string);
