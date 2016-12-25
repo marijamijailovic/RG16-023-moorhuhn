@@ -4,50 +4,21 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <math.h>
-#include <time.h>
 #include "SOIL.h"
+#include "initialize.h"
 
-#define CHICKEN_MAX 20
-#define BULLET_MAX 100
+#define DEG2RAD 3.14/180.0
 
-typedef struct Chicken{
-  /*Velicina kokoske*/
-  float chickenSize;
-  /*koordinate sfere*/
-  float xCurr;
-  float yCurr;
-  float zCurr;
-  float rotate;
-  int alive;
-  GLuint texDead;
-  int activeDeadChicken;
-  GLuint tex;
-}Chicken;
-Chicken chickens[CHICKEN_MAX];
-
-typedef struct Bullet{
-  float bulletSize;
-  float xPos;
-  float yPos;
-  float zPos;
-  int alive;
-}Bullet;
-Bullet bullets[BULLET_MAX];
-
-GLuint texCloud;
-
-extern void ground(void);
-extern void drawCloud(void);
-extern void drawChicken(int index);
-extern void drawSun(float sunRotationParametar);
-extern void die(void);
-extern void drawGun(float angleLR,float angleTB);
-extern void drawBullets(void);
-extern int collision(Chicken c,Bullet b);
-extern void bulletChickenCollision(void);
-extern void dead(Chicken c);
-extern void loadObj();
-extern void lightSetup(void);
-extern void materialSetup(void);
+void ground(void);
+void drawPuddle(void);
+void drawSun(void);
+void drawCloud(void);
+void drawStar(void);
+void drawKuca(void);
+void drawAuto(void);
+void drawDrvo(void);
+void drawBundeva(void);
+void drawGun(float angleLR,float angleTB);
+void drawBullets(void);
 
 #endif
