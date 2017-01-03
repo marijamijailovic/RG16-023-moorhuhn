@@ -8,14 +8,14 @@
 #define TIMER_CHICKEN 0
 
 /*Deklarisemo funkcije*/
-static void onKeyboard(unsigned char key,int x,int y);
-static void onReshape(int width, int height);
-static void onDisplay(void);
-static void onTimer(int id);
-static void chickenTimer(int id);
+void onKeyboard(unsigned char key,int x,int y);
+void onReshape(int width, int height);
+void onDisplay(void);
+void onTimer(int id);
+void chickenTimer(int id);
 
 /*Flag za odredjivanje da li je animacija u toku*/
-static int animationOnGoing;
-static int animationChicken;
+int animationOnGoing;
+int animationChicken;
 
 #endif

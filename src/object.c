@@ -5,6 +5,9 @@ void drawChickenKart(int index)
 {
   float x,y,z,scale;
   int i;
+  /*postavljam glColor3f, da bi mi ocuvao boju kokoske dok je ziva,inace
+  bi mi pri prvom ubijanju neke od kokse,sve ostale postavljaju alfa na 0*/
+  glColor3f(1.0,1.0,1.0);
   for(i=0; i < CHICKEN_KART_MAX; i++){
     if(chickensKart[i].alive){
       x = chickensKart[i].xCurr;
@@ -20,9 +23,13 @@ void drawChickenKart(int index)
   }
 }
 
+/*crtam sve ostale kokoske na sceni*/
 void drawChicken(int id)
 {
   if(chicken[id].alive){
+    /*postavljam glColor3f, da bi mi ocuvao boju kokoske dok je ziva,inace
+    bi mi pri prvom ubijanju neke od kokse,sve ostale postavljaju alfa na 0.0*/
+    glColor3f(1.0,1.0,1.0);
     float x = chicken[id].xCurr;
     float y = chicken[id].yCurr;
     float z = chicken[id].zCurr;
@@ -41,10 +48,9 @@ void drawChicken(int id)
 /*crtam mrtvu kokosku*/
 void dead(Object c)
 {
-  if(c.activeDeadChicken){
-    glPushMatrix();
-      glTranslatef(c.xCurr,c.yCurr,c.zCurr);
-      texture(DEAD);
-    glPopMatrix();
-  }
+  glColor4f(1.0,1.0,1.0,c.alpha);
+  glPushMatrix();
+    glTranslatef(c.xCurr,c.yCurr,c.zCurr);
+    texture(DEAD);
+  glPopMatrix();
 }

@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include "initialize.h"
+#include "gui.h"
 
 int collisionChicken(Object c,Bullet b,float size);
 int collisionSun(float x,float y,float z,float r,Bullet b);

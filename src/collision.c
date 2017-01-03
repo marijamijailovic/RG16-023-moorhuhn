@@ -8,15 +8,16 @@ float min(float a, float b)
 {
   return a < b ? a : b;
 }
+/*kolizija objekta sa metkom, size je velicina mog aabb boxa*/
 int collisionChicken(Object c,Bullet b,float size)
 {
   float x, y, z, d;
-  
+
   x = max(c.xCurr-size/2.0, min(b.xPos, c.xCurr + size/2.0));
   y = max(c.yCurr-size/2.0, min(b.yPos, c.yCurr + size/2.0));
   z = max(c.zCurr-size/2.0, min(b.zPos, c.zCurr + size/2.0));
 
-  d = (x-b.xPos)*(x-b.xPos) + (y-b.yPos)*(y-b.yPos) + (z-b.zPos)*(z-b.zPos);
+  d = sqrt((x-b.xPos)*(x-b.xPos) + (y-b.yPos)*(y-b.yPos) + (z-b.zPos)*(z-b.zPos));
 
   if(d <= b.bulletSize){
       return 1;
@@ -24,6 +25,7 @@ int collisionChicken(Object c,Bullet b,float size)
   return 0;
 }
 
+/*kolizija sa suncem*/
 int collisionSun(float x,float y,float z,float r,Bullet b)
 {
   float xB,yB,zB,rB,d;
@@ -41,6 +43,7 @@ int collisionSun(float x,float y,float z,float r,Bullet b)
   return 0;
 }
 
+/*za svaki metak i za svaki od objekata proveravam koliziju*/
 void bulletCollision(void)
 {
   int i,j,k;
@@ -52,20 +55,43 @@ void bulletCollision(void)
                   bullets[i].alive = 0;
                   chickensKart[j].activeDeadChicken = 1;
                   chickensKart[j].alive = 0;
+                  /*u zavisnosti na kojoj udaljenosti je kokoska ubijena toliko poena dobijamo*/
+                  if(chickensKart[j].zCurr <= -25.0){
+                    rezultat += 30;
+                  }
+                  else if(chickensKart[j].zCurr > -25.0 && chickensKart[j].zCurr <= 0){
+                    rezultat += 25;
+                  }
+                  else{
+                    rezultat += 15;
+                  }
+                  sprintf(scoreText, "Score: %d", rezultat);
                   break;
               }
             }
           }
           for(k=0;k<7;k++){
             if(chicken[k].alive){
-              if(collisionChicken(chicken[k],bullets[i],chicken[i].scale)){
-                bullets[i].alive = 0;
-                chicken[k].activeDeadChicken = 1;
-                chicken[k].alive = 0;
+              if(collisionChicken(chicken[k],bullets[i],chicken[k].scale)){
+                /*sve ostale kokoske nose isti br bodova*/
+                if(k!=KOKASTATUA){
+                  bullets[i].alive = 0;
+                  chicken[k].activeDeadChicken = 1;
+                  chicken[k].alive = 0;
+                  rezultat += 20;
+                  sprintf(scoreText, "Score: %d", rezultat);
+                }
+                /*ona nam jedina donosi negativne poene, nije kokoska, statua je!*/
+                else{
+                  bullets[i].alive = 0;
+                  rezultat -= 20;
+                  sprintf(scoreText, "Score: %d", rezultat);
+                }
                 break;
               }
             }
           }
+          /*nosi najvise, jer nam je daleko a i treba ga dobro nanisaniti*/
           if(sunAlive){
             if(collisionSun(xSun,ySun,zSun,rSun,bullets[i])){
               bullets[i].alive = 0;
@@ -73,6 +99,8 @@ void bulletCollision(void)
               cloudAlive = 0;
               starAlive = 1;
               glClearColor(0.1,0.1,0.1,1);
+              rezultat += 50;
+              sprintf(scoreText, "Score: %d", rezultat);
               break;
             }
           }

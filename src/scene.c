@@ -7,6 +7,7 @@ void ground(void)
     int i;
     glColor3f(0.94,0.94,0.94);
     for(i=-51;i<=6;i+=10){
+      /*za razdvajanje traka*/
       glBegin(GL_POLYGON);
         glVertex3f(-0.5,0.0001,(float)i+1);
         glVertex3f(0.5,0.0001,(float)i+1);
@@ -15,6 +16,7 @@ void ground(void)
       glEnd();
     }
 
+    /*put*/
     glBegin(GL_QUADS);
       glColor3f(0.24,0.24,0.24);
       glVertex3f(-6,0,-50);
@@ -67,9 +69,9 @@ float function(float u, float v)
 void drawPuddle(void)
 {
   glPushMatrix();
-
     glTranslatef(-8.5,0.6,-8.3);
     glScalef(0.05,0.05,0.05);
+    /*baru crtamo tako da izgleda kao elipsa*/
     glBegin(GL_POLYGON);
     glColor3f(0.0,0.305,0.8);
     for(int i=0; i < 360; i++)
@@ -77,6 +79,7 @@ void drawPuddle(void)
       float degInRad = i*(DEG2RAD);
       float u = cos(degInRad)*40.0;
       float v = sin(degInRad)*55.0;
+      /*y ce nam se menjati po sin, tako da bara lici kao da ima talasice*/
       glVertex3f(u,function(u,v),v);
     }
     glEnd();
@@ -85,7 +88,7 @@ void drawPuddle(void)
 
 void drawSun(void)
 {
-  /*crtam sunce*/
+  /*crtam sunce, ako ga jos nismo upucali*/
   if(sunAlive){
     glPushMatrix();
       glColor3f(0.9,0.9,0);
@@ -105,6 +108,7 @@ void drawSun(void)
 
 void drawCloud(void)
 {
+  /*ako smo ubili sunce,vise necemo crtati oblake*/
   if(cloudAlive){
     glColor3f(1.0,1.0,1.0);
     /*dva zajedno*/
@@ -143,32 +147,24 @@ void drawCloud(void)
   }
 }
 
-/*crtam zvezdu*/
 void drawStar()
 {
+  /*ako smo ubii sunce, crtamo zvezde*/
   if(starAlive){
     int i;
     for(i=0;i<5;i++){
-      glBegin(GL_LINES);
+      glBegin(GL_LINE_STRIP);
         glColor3f(0.5,0.5,0.0);
+        /*od temena na vrhu,pa ide u smeru kazaljke na satu*/
         glVertex3f(star[i].xCurr,star[i].yCurr,star[i].zCurr);
         glVertex3f(star[i].xCurr+0.3,star[i].yCurr-0.3,star[i].zCurr);
-        glVertex3f(star[i].xCurr+0.3,star[i].yCurr-0.3,star[i].zCurr);
-        glVertex3f(star[i].xCurr+0.8,star[i].yCurr-0.3,star[i].zCurr);
         glVertex3f(star[i].xCurr+0.8,star[i].yCurr-0.3,star[i].zCurr);
         glVertex3f(star[i].xCurr+0.3,star[i].yCurr-0.6,star[i].zCurr);
-        glVertex3f(star[i].xCurr+0.3,star[i].yCurr-0.6,star[i].zCurr);
-        glVertex3f(star[i].xCurr+0.6,star[i].yCurr-0.9,star[i].zCurr);
         glVertex3f(star[i].xCurr+0.6,star[i].yCurr-0.9,star[i].zCurr);
         glVertex3f(star[i].xCurr,star[i].yCurr-0.7,star[i].zCurr);
-        glVertex3f(star[i].xCurr,star[i].yCurr-0.7,star[i].zCurr);
-        glVertex3f(star[i].xCurr-0.6,star[i].yCurr-0.9,star[i].zCurr);
         glVertex3f(star[i].xCurr-0.6,star[i].yCurr-0.9,star[i].zCurr);
         glVertex3f(star[i].xCurr-0.3,star[i].yCurr-0.6,star[i].zCurr);
-        glVertex3f(star[i].xCurr-0.3,star[i].yCurr-0.6,star[i].zCurr);
         glVertex3f(star[i].xCurr-0.8,star[i].yCurr-0.3,star[i].zCurr);
-        glVertex3f(star[i].xCurr-0.8,star[i].yCurr-0.3,star[i].zCurr);
-        glVertex3f(star[i].xCurr-0.3,star[i].yCurr-0.3,star[i].zCurr);
         glVertex3f(star[i].xCurr-0.3,star[i].yCurr-0.3,star[i].zCurr);
         glVertex3f(star[i].xCurr,star[i].yCurr,star[i].zCurr);
       glEnd();
@@ -192,7 +188,6 @@ void drawDrvo()
   glPopMatrix();
 }
 
-/*crtam kucu*/
 void drawKuca()
 {
   glColor3f(1.0,1.0,1.0);
@@ -203,7 +198,6 @@ void drawKuca()
   glPopMatrix();
 }
 
-/*crtam auto*/
 void drawAuto()
 {
   glColor3f(1.0,1.0,1.0);
@@ -214,7 +208,6 @@ void drawAuto()
   glPopMatrix();
 }
 
-/*crtam bundevu*/
 void drawBundeva()
 {
   glPushMatrix();
@@ -224,13 +217,11 @@ void drawBundeva()
   glPopMatrix();
 }
 
-/*crtam pistolj*/
 void drawGun(float angleLR,float angleTB)
 {
-  float x = 0.0, y = 0.5, z = 8.0;
   glPushMatrix();
     glColor3f(0.2,0.2,0.2);
-    glTranslatef(x,y,z);
+    glTranslatef(xGun,yGun,zGun);
     glRotatef(angleLR,0,1,0);
     glRotatef(angleTB,1,0,0);
     glScalef(0.3,0.3,1.0);
@@ -238,7 +229,6 @@ void drawGun(float angleLR,float angleTB)
   glPopMatrix();
 }
 
-/*crtam metke*/
 void drawBullets()
 {
     float x, y, z;

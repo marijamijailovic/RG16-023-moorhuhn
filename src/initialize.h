@@ -3,12 +3,13 @@
 
 #include <GL/glut.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <time.h>
 #include "SOIL.h"
 
 #define CHICKEN_KART_MAX 20
-#define IMAGES_MAX 14
+#define IMAGES_MAX 15
 #define BULLET_MAX 100
 
 /*definisem makroe za teksture*/
@@ -26,6 +27,7 @@
 #define DRVO 11
 #define KUCA 12
 #define AUTO 13
+#define GAME_OVER 14
 
 typedef struct Bullet{
   float bulletSize;
@@ -48,12 +50,16 @@ int cloudAlive;
 /*flag za zvezde*/
 int starAlive;
 
+/*Koordinate za pistolj*/
+float xGun,yGun,zGun;
+
 typedef struct Object{
   float xCurr;
   float yCurr;
   float zCurr;
   float scale;
   int alive;
+  float alpha;
   int animationAction;
   int activeDeadChicken;
 }Object;
@@ -62,21 +68,24 @@ Object chickensKart[CHICKEN_KART_MAX];
 Object chicken[8];
 Object star[5];
 
+int gameOverID;
+
 int tex[IMAGES_MAX];
 
 int chickenIndex;
 
-/*animacija za baru*/
 float bara;
 
 float angleLR;
 float angleTB;
 
 int getRand(int min,int max);
-void initialize(void);
-void lightSetup(void);
+void initializeImages(void);
+void initializeChicken(void);
+void initializeSunStar(void);
+void initializeBulletsGun(void);
+void initializeLight(void);
 void materialSetup(void);
-void renderBitmapString(float x, float y, void *font,const char *string,float r,float g,float b);
 void texture(int texId);
 
 #endif

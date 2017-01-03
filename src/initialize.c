@@ -1,11 +1,7 @@
 #include "initialize.h"
 
-void initialize(void)
+void initializeImages(void)
 {
-  chickenIndex = 0;
-  angleLR = 0;
-  angleTB = 0;
-
   char *images[] = {
                    "images/istrazivac.png",
                    "images/novinar.png",
@@ -20,7 +16,8 @@ void initialize(void)
                    "images/cloud.png",
                    "images/drvo.png",
                    "images/kuca.png",
-                   "images/auto.png"
+                   "images/auto.png",
+                   "images/gameover.png"
                  };
 
   int i;
@@ -33,6 +30,10 @@ void initialize(void)
              SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
          );
   }
+}
+void initializeChicken(void)
+{
+  chickenIndex = 0;
 
   float koordinateKokosaka[][3] = {
                                 {6.5,0.45,0.0}, /*istrazivac*/
@@ -52,11 +53,13 @@ void initialize(void)
        for(index = 0;index < CHICKEN_KART_MAX;index++){
          chickensKart[index].xCurr = (float)getRand(-4.5,4.5);
          chickensKart[index].yCurr = 0.3*((float)rand()/RAND_MAX);
-         chickensKart[index].zCurr = (float)getRand(-30,0);
+         chickensKart[index].zCurr = (float)getRand(-45,-10);
          chickensKart[index].alive = 0;
          chickensKart[index].activeDeadChicken = 0;
          chickensKart[index].scale = 2.0;
-       }
+         chickensKart[index].alpha = 1.0;
+        }
+
       int i;
       for(i=0;i<7;i++){
         chicken[i].xCurr = koordinateKokosaka[i][0];
@@ -64,6 +67,7 @@ void initialize(void)
         chicken[i].zCurr = koordinateKokosaka[i][2];
         chicken[i].alive = 1;
         chicken[i].activeDeadChicken = 0;
+        chicken[i].alpha = 1.0;
         chicken[i].animationAction = 1;
         if(i == PECAROS){
           chicken[i].scale = 2.0;
@@ -76,7 +80,9 @@ void initialize(void)
         }
       }
   }
-
+}
+void initializeSunStar(void)
+{
   /*inicijalizacija sunca*/
   {
     xSun = 35.0, ySun = 16.0, zSun = -45.0, rSun = 2.5;
@@ -94,6 +100,13 @@ void initialize(void)
       star[i].zCurr = (float)getRand(-35,-45);
     }
   }
+}
+
+void initializeBulletsGun(void)
+{
+  /*za ugao rotacije pistolja*/
+  angleLR = 0;
+  angleTB = 0;
 
   /*inicijalizacija metaka*/
   {
@@ -104,15 +117,18 @@ void initialize(void)
     }
   }
 
-  /*OpenGl inicijalizacija*/
-  glClearColor(0.6,0.8,0.9,1);
+  /*inicijalizacija pistolja*/
+  {
+    xGun = 0.0, yGun = 0.5, zGun = 8.0;
+  }
 }
-
+/*generise random broj iz zadatog intervala*/
 int getRand(int min,int max)
 {
 	  return(rand()%(max-min)+min);
 }
 
+/*postavljanje tekstura na scenu, koristeci SOIL biblioteku*/
 void texture(int texId)
 {
   glDepthMask(GL_FALSE);
@@ -154,7 +170,7 @@ void texture(int texId)
    glDepthMask(GL_TRUE);
 }
 
-void lightSetup(void)
+void initializeLight(void)
 {
   /*Pozicija svetla (u pitanju je direkcionalno svetlo)*/
   GLfloat light_position[] = {0,1,3,0};
@@ -172,10 +188,3 @@ void lightSetup(void)
   glLightfv(GL_LIGHT0,GL_DIFFUSE,light_diffuse);
   glLightfv(GL_LIGHT0,GL_SPECULAR,light_specular);
 }
-
-/*void renderBitmapString(float x, float y, void *font,const char *string,float r,float g, float b)
-{
-  glColor3f(r,g,b);
-  glRasterPos2f(x, y);
-  glutBitmapString(font,string);
-}*/
