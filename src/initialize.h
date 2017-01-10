@@ -2,32 +2,32 @@
 #define INITIALIZE_H
 
 #include <GL/glut.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 #include <time.h>
 #include "SOIL.h"
 
 #define CHICKEN_KART_MAX 20
-#define IMAGES_MAX 15
+#define CHICKEN_MAX 8
+#define IMAGES_MAX 16
 #define BULLET_MAX 100
 
 /*definisem makroe za teksture*/
-#define ISTRAZIVAC 0
-#define NOVINAR 1
+#define EXPLORER 0
+#define JOURNALIST 1
 #define NINJA 2
-#define PECAROS 3
+#define FISHER 3
 #define STUDENT 4
-#define KOKASTATUA 5
-#define LETECA 6
-#define DEAD 7
-#define KART 8
-#define BUNDEVA 9
-#define CLOUD 10
-#define DRVO 11
-#define KUCA 12
-#define AUTO 13
-#define GAME_OVER 14
+#define STATUE 5
+#define FLY 6
+#define DRIVER 7
+#define DEAD 8
+#define KART 9
+#define PUMPKIN 10
+#define CLOUD 11
+#define WOOD 12
+#define HOME 13
+#define CAR 14
+#define GAME_OVER 15
 
 typedef struct Bullet{
   float bulletSize;
@@ -65,7 +65,7 @@ typedef struct Object{
 }Object;
 
 Object chickensKart[CHICKEN_KART_MAX];
-Object chicken[8];
+Object chicken[CHICKEN_MAX];
 Object star[5];
 
 int gameOverID;
@@ -85,7 +85,6 @@ void initializeChicken(void);
 void initializeSunStar(void);
 void initializeBulletsGun(void);
 void initializeLight(void);
-void materialSetup(void);
 void texture(int texId);
 
 #endif

@@ -1,9 +1,7 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <GL/glut.h>
 #include <GL/freeglut.h>
-#include <stdio.h>
 #include <string.h>
 #include "initialize.h"
 #include "callback.h"

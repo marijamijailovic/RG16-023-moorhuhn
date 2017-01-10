@@ -2,7 +2,6 @@
 #define OBJECT_H
 
 #include <GL/glut.h>
-#include <stdio.h>
 #include "SOIL.h"
 #include "initialize.h"
 

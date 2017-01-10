@@ -28,7 +28,7 @@ void drawChicken(int id)
 {
   if(chicken[id].alive){
     /*postavljam glColor3f, da bi mi ocuvao boju kokoske dok je ziva,inace
-    bi mi pri prvom ubijanju neke od kokse,sve ostale postavljaju alfa na 0.0*/
+    bi mi pri prvom ubijanju neke od kokse,sve ostale dobile alfa vrednost na 0.0*/
     glColor3f(1.0,1.0,1.0);
     float x = chicken[id].xCurr;
     float y = chicken[id].yCurr;
@@ -37,7 +37,7 @@ void drawChicken(int id)
     glPushMatrix();
       glTranslatef(x,y,z);
       glScalef(scale,scale,scale);
-      if(id == ISTRAZIVAC){
+      if(id == EXPLORER){
         glRotatef(angleRotation,0,1.0,0);
       }
       texture(id);

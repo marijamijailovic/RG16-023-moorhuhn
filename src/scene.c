@@ -7,7 +7,7 @@ void ground(void)
     int i;
     glColor3f(0.94,0.94,0.94);
     for(i=-51;i<=6;i+=10){
-      /*za razdvajanje traka*/
+      /*isprekidana linija*/
       glBegin(GL_POLYGON);
         glVertex3f(-0.5,0.0001,(float)i+1);
         glVertex3f(0.5,0.0001,(float)i+1);
@@ -74,7 +74,8 @@ void drawPuddle(void)
     /*baru crtamo tako da izgleda kao elipsa*/
     glBegin(GL_POLYGON);
     glColor3f(0.0,0.305,0.8);
-    for(int i=0; i < 360; i++)
+    int i;
+    for(i=0; i < 360; i++)
     {
       float degInRad = i*(DEG2RAD);
       float u = cos(degInRad)*40.0;
@@ -95,15 +96,23 @@ void drawSun(void)
       glTranslatef(xSun,ySun,zSun);
       glutSolidSphere(rSun,60,30);
     glPopMatrix();
-  }
 
-  /*TODO: trouglici oko sunca-zavrsiti
-  glBegin(GL_POLYGON);
-    glVertex3f(59.0,28.0,-70.0);
-    glVertex3f(60.0,30.0,-70.0);
-    glVertex3f(61.0,28.0,-70.0);
-  glEnd();
-  */
+    glPushMatrix();
+    glTranslatef(35.0,16.0,-45.0);
+    int i,k;
+    for (i=0,k=15; i < 360; i+=30,k+=30)
+    {
+      float degInRadI = i*DEG2RAD;
+      float deginRadK = k*DEG2RAD;
+      glBegin(GL_TRIANGLES);
+       glVertex2f(cos(degInRadI)*(rSun+1.5),sin(degInRadI)*(rSun+1.5));
+       glVertex2f(cos(degInRadI)*(rSun),sin(degInRadI)*(rSun));
+       glVertex2f(cos(deginRadK)*(rSun+1.5),sin(deginRadK)*(rSun+1.5));
+      glEnd();
+    }
+
+    glPopMatrix();
+  }
 }
 
 void drawCloud(void)
@@ -128,14 +137,14 @@ void drawCloud(void)
     glPushMatrix();
       glTranslatef(-80.0,18.0,-70.0);
       glScalef(5.0,3.0,1.0);
-      texture(10);
+      texture(CLOUD);
     glPopMatrix();
 
      /*sredina*/
     glPushMatrix();
       glTranslatef(-10.0,21.0,-65.0);
       glScalef(30.0,10.0,1.0);
-      texture(10);
+      texture(CLOUD);
     glPopMatrix();
 
      /*kod sunca*/
@@ -172,48 +181,48 @@ void drawStar()
   }
 }
 
-void drawDrvo()
+void drawWood()
 {
   glColor3f(1.0,1.0,1.0);
   glPushMatrix();
     glTranslatef(4.0,0.5,-10.0);
     glScalef(3.0,3.0,1.0);
-    texture(DRVO);
+    texture(WOOD);
   glPopMatrix();
 
   glPushMatrix();
     glTranslatef(-6.5,0.5,-10.0);
     glScalef(3.0,3.0,1.0);
-    texture(DRVO);
+    texture(WOOD);
   glPopMatrix();
 }
 
-void drawKuca()
+void drawHome()
 {
   glColor3f(1.0,1.0,1.0);
   glPushMatrix();
     glTranslatef(-6.5,1.0,2.8);
     glScalef(2.5,1.5,1.0);
-    texture(KUCA);
+    texture(HOME);
   glPopMatrix();
 }
 
-void drawAuto()
+void drawCar()
 {
   glColor3f(1.0,1.0,1.0);
   glPushMatrix();
-    glTranslatef(8.0,0.5,-3.0);
+    glTranslatef(9.5,0.5,-4.0);
     glScalef(3.5,2.0,1.0);
-    texture(AUTO);
+    texture(CAR);
   glPopMatrix();
 }
 
-void drawBundeva()
+void drawPumpkin()
 {
   glPushMatrix();
     glTranslatef(8.5,0.5,-8.0);
     glScalef(1.5,1.5,1.5);
-    texture(BUNDEVA);
+    texture(PUMPKIN);
   glPopMatrix();
 }
 

@@ -1,9 +1,18 @@
 #ifndef CALLBACK_H
 #define CALLBACK_H
 
+#include <GL/glut.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "initialize.h"
+#include "scene.h"
+#include "object.h"
+#include "collision.h"
+#include "gui.h"
+
 /*Timers*/
 #define TIMER_ID 1
-#define TIMER_INTERVAL 40
+#define TIMER_INTERVAL 30
 #define TIMER_ID_CHICKEN 2
 #define TIMER_CHICKEN 0
 

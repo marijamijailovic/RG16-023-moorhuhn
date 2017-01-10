@@ -4,7 +4,7 @@ void renderString(float x, float y, float z, void *font,const char *string,float
 {
   glColor3f(r,g,b);
   glRasterPos3f(x, y, z);
-  glutBitmapString(font,string);
+  glutBitmapString((void*)font,(const unsigned char*)string);
 }
 
 void printText()
@@ -86,6 +86,7 @@ void gameOver()
   printScore();
   printTime();
 
-  /*prekidamo igrici*/
+  /*prekidamo igricu*/
   animationOnGoing = 0;
+  animationChicken = 0;
 }

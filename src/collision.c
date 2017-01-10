@@ -70,18 +70,18 @@ void bulletCollision(void)
               }
             }
           }
-          for(k=0;k<7;k++){
+          for(k=0;k<CHICKEN_MAX;k++){
             if(chicken[k].alive){
               if(collisionChicken(chicken[k],bullets[i],chicken[k].scale)){
                 /*sve ostale kokoske nose isti br bodova*/
-                if(k!=KOKASTATUA){
+                if(k!=STATUE){
                   bullets[i].alive = 0;
                   chicken[k].activeDeadChicken = 1;
                   chicken[k].alive = 0;
                   rezultat += 20;
                   sprintf(scoreText, "Score: %d", rezultat);
                 }
-                /*ona nam jedina donosi negativne poene, nije kokoska, statua je!*/
+                /*statua nam jedina donosi negativne poene, nije kokoska, statua je!*/
                 else{
                   bullets[i].alive = 0;
                   rezultat -= 20;
@@ -91,7 +91,7 @@ void bulletCollision(void)
               }
             }
           }
-          /*nosi najvise, jer nam je daleko a i treba ga dobro nanisaniti*/
+          /*nosi najvise, jer nam je daleko*/
           if(sunAlive){
             if(collisionSun(xSun,ySun,zSun,rSun,bullets[i])){
               bullets[i].alive = 0;

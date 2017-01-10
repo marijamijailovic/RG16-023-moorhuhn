@@ -3,20 +3,21 @@
 void initializeImages(void)
 {
   char *images[] = {
-                   "images/istrazivac.png",
-                   "images/novinar.png",
+                   "images/explorer.png",
+                   "images/journalist.png",
                    "images/ninja.png",
-                   "images/pecaros.png",
+                   "images/fisher.png",
                    "images/student.png",
-                   "images/kokastatua.png",
-                   "images/leteca.png",
+                   "images/statue.png",
+                   "images/fly.png",
+                   "images/driver.png",
                    "images/dead.png",
                    "images/kart.png",
-                   "images/bundeva.png",
+                   "images/pumpkin.png",
                    "images/cloud.png",
-                   "images/drvo.png",
-                   "images/kuca.png",
-                   "images/auto.png",
+                   "images/wood.png",
+                   "images/home.png",
+                   "images/car.png",
                    "images/gameover.png"
                  };
 
@@ -35,14 +36,15 @@ void initializeChicken(void)
 {
   chickenIndex = 0;
 
-  float koordinateKokosaka[][3] = {
+  float koordinateKokosaka[CHICKEN_MAX][3] = {
                                 {6.5,0.45,0.0}, /*istrazivac*/
                                 {-7.0,0.55,-0.5}, /*novinar*/
                                 {-15.0,0.4,-1.5}, /*ninja*/
-                                {-7.2,0.2,-8.5}, /*pecaros*/
+                                {-7.0,0.5,-8.5}, /*pecaros*/
                                 {-9.5,0.5,-0.5}, /*student*/
                                 {8.5,1.8,-8.0}, /*koka statua*/
-                                {0.0,5.5,-45.0} /*leteca*/
+                                {0.0,5.5,-45.0}, /*leteca*/
+                                {11.5,1.5,-4.5} /*vozac*/
                            };
 
   srand(time(NULL));
@@ -61,7 +63,7 @@ void initializeChicken(void)
         }
 
       int i;
-      for(i=0;i<7;i++){
+      for(i=0;i<CHICKEN_MAX;i++){
         chicken[i].xCurr = koordinateKokosaka[i][0];
         chicken[i].yCurr = koordinateKokosaka[i][1];
         chicken[i].zCurr = koordinateKokosaka[i][2];
@@ -69,11 +71,14 @@ void initializeChicken(void)
         chicken[i].activeDeadChicken = 0;
         chicken[i].alpha = 1.0;
         chicken[i].animationAction = 1;
-        if(i == PECAROS){
-          chicken[i].scale = 2.0;
-        }
-        else if(i == KOKASTATUA){
+        if(i == FISHER){
           chicken[i].scale = 1.5;
+        }
+        else if(i == STATUE){
+          chicken[i].scale = 1.5;
+        }
+        else if(i == DRIVER){
+          chicken[i].scale = 0.8;
         }
         else{
           chicken[i].scale = 1.0;
@@ -110,10 +115,10 @@ void initializeBulletsGun(void)
 
   /*inicijalizacija metaka*/
   {
-    int index;
-    for(index = 0;index < BULLET_MAX; index++){
-      bullets[index].bulletSize = 0.08;
-      bullets[index].alive = 0;
+    int i;
+    for(i = 0;i < BULLET_MAX; i++){
+      bullets[i].bulletSize = 0.08;
+      bullets[i].alive = 0;
     }
   }
 
