@@ -1,6 +1,7 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include "callback.h"
+#include "initialize.h"
 
 int main(int argc,char *argv[])
 {
@@ -27,6 +28,11 @@ int main(int argc,char *argv[])
   initializeSunStar();
   /*inicijalizacija metaka i pistolja*/
   initializeBulletsGun();
+
+  /*inicijalizacija svetla*/
+  initializeLight();
+  /*Ukljucujemo koriscenje glColor definisanih boja za materijale */
+  glEnable(GL_COLOR_MATERIAL);
 
   /*Inicijalni tekst */
   strcpy(text,"Press G for New Game\nPress Esc for quit\n");

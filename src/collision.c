@@ -8,14 +8,16 @@ float min(float a, float b)
 {
   return a < b ? a : b;
 }
-/*kolizija objekta sa metkom, size je velicina mog aabb boxa*/
+/*kolizija tipa AABB - sfera*/
 int collisionChicken(Object c,Bullet b,float size)
 {
   float x, y, z, d;
 
-  x = max(c.xCurr-size/2.0, min(b.xPos, c.xCurr + size/2.0));
-  y = max(c.yCurr-size/2.0, min(b.yPos, c.yCurr + size/2.0));
-  z = max(c.zCurr-size/2.0, min(b.zPos, c.zCurr + size/2.0));
+  /*na poziciji c.xCurr mi je minX, a na poziciji c.xCurr+size je maxX,
+  analogno za y,z, i onda po algoritmu kolizije AABB - sfera, racunam koliziju*/
+  x = max(c.xCurr, min(b.xPos, c.xCurr + size));
+  y = max(c.yCurr, min(b.yPos, c.yCurr + size));
+  z = max(c.zCurr, min(b.zPos, c.zCurr + size));
 
   d = sqrt((x-b.xPos)*(x-b.xPos) + (y-b.yPos)*(y-b.yPos) + (z-b.zPos)*(z-b.zPos));
 
@@ -73,18 +75,25 @@ void bulletCollision(void)
           for(k=0;k<CHICKEN_MAX;k++){
             if(chicken[k].alive){
               if(collisionChicken(chicken[k],bullets[i],chicken[k].scale)){
-                /*sve ostale kokoske nose isti br bodova*/
-                if(k!=STATUE){
+                /*koka statua negativne poene nosi, nije kokoska, statua je!*/
+                if(k == STATUE){
+                  bullets[i].alive = 0;
+                  rezultat -= 20;
+                  sprintf(scoreText, "Score: %d", rezultat);
+                }
+                /*letece nam nose malo vise od zemljanih*/
+                else if(k == FLY || k == NINJA){
+                  bullets[i].alive = 0;
+                  chicken[k].activeDeadChicken = 1;
+                  chicken[k].alive = 0;
+                  rezultat += 40;
+                  sprintf(scoreText, "Score: %d", rezultat);
+                }
+                else{
                   bullets[i].alive = 0;
                   chicken[k].activeDeadChicken = 1;
                   chicken[k].alive = 0;
                   rezultat += 20;
-                  sprintf(scoreText, "Score: %d", rezultat);
-                }
-                /*statua nam jedina donosi negativne poene, nije kokoska, statua je!*/
-                else{
-                  bullets[i].alive = 0;
-                  rezultat -= 20;
                   sprintf(scoreText, "Score: %d", rezultat);
                 }
                 break;

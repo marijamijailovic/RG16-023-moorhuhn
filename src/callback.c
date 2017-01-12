@@ -10,7 +10,7 @@ void onKeyboard(unsigned char key,int x,int y)
     /*ugao za koji pomeramo top*/
     case 'a':
     case 'A':
-      angleLR += 2.0; /*rotiramo pistolj levo*/
+      angleLR += 5.0; /*rotiramo pistolj levo*/
       /*granica dokle moze da ide levo*/
       if(angleLR > 60.0){
         angleLR = 60.0;
@@ -18,7 +18,7 @@ void onKeyboard(unsigned char key,int x,int y)
       break;
     case 'd':
     case 'D':
-      angleLR -= 2.0; /*rotiramo pistolj desno*/
+      angleLR -= 5.0; /*rotiramo pistolj desno*/
       /*granica dokle moze da ide desno*/
       if(angleLR < -60.0){
         angleLR = -60.0;
@@ -26,7 +26,7 @@ void onKeyboard(unsigned char key,int x,int y)
       break;
     case 's':
     case 'S':
-      angleTB -= 1.0; /*rotiramo pistolj dole*/
+      angleTB -= 3.0; /*rotiramo pistolj dole*/
       /*granica dokle moze da ide dole*/
       if(angleTB < 0.5){
         angleTB = 0.5;
@@ -34,7 +34,7 @@ void onKeyboard(unsigned char key,int x,int y)
       break;
     case 'w':
     case 'W':
-      angleTB += 1.0; /*rotiramo pistolj gore*/
+      angleTB += 3.0; /*rotiramo pistolj gore*/
       /*granica dokle moze da ide gore*/
       if(angleTB > 18){
         angleTB = 18;
@@ -48,13 +48,13 @@ void onKeyboard(unsigned char key,int x,int y)
         int i,run = 1;
         for (i=0;run && (i<BULLET_MAX);i++){
           if(!bullets[i].alive){
-						bullets[i].alive = 1;
+            bullets[i].alive = 1;
             bullets[i].xPos = 0.0;
             bullets[i].yPos = 0.55;
             bullets[i].zPos = 8.0;
             /*brzina metka po x,y,z koordinati*/
-						bullets[i].xSpeed = angleLR/110;
-						bullets[i].ySpeed = angleTB/110;
+            bullets[i].xSpeed = angleLR/100;
+            bullets[i].ySpeed = angleTB/100;
             bullets[i].zSpeed = 0.5;
             run = 0;
           }
@@ -93,15 +93,15 @@ void onTimer(int id)
       return;
     }
     int index,i,j;
-		/*pomeramo kokoske u kolima*/
+    /*pomeramo kokoske u kolima*/
     for(index=0;index<CHICKEN_KART_MAX;index++){
         if(chickensKart[index].alive){
             chickensKart[index].zCurr += 0.1;
-          /*ako nam je kokoska pobegla, i nismo je ubili, izgubili smo igricu*/
-          if(chickensKart[index].zCurr >= 6.5){
+            /*ako nam je kokoska pobegla, i nismo je ubili, izgubili smo igricu*/
+            if(chickensKart[index].zCurr >= 6.5){
             chickensKart[index].alive = 0;
             gameOverID = 1;
-          }
+            }
         }
         /*mrtva kokoska gubi svoju alfa vrednost, i tako nestaje polako sa scene*/
         if(!chickensKart[index].alive && chickensKart[index].activeDeadChicken){
@@ -112,17 +112,17 @@ void onTimer(int id)
         }
     }
 
-		/*pomeramo metke*/
+    /*pomeramo metke*/
     for(i=0;i<BULLET_MAX;i++){
-			if(bullets[i].alive){
-					bullets[i].xPos -= bullets[i].xSpeed;
-					bullets[i].yPos += bullets[i].ySpeed;
-					bullets[i].zPos -= bullets[i].zSpeed;
-        /*ako nismo nista pogodili, a metak je dovoljno daleko, ne crta se vise*/
-        if(bullets[i].zPos <= -50.0){
+        if(bullets[i].alive){
+          bullets[i].xPos -= bullets[i].xSpeed;
+          bullets[i].yPos += bullets[i].ySpeed;
+          bullets[i].zPos -= bullets[i].zSpeed;
+          /*ako nismo nista pogodili, a metak je dovoljno daleko, ne crta se vise*/
+          if(bullets[i].zPos <= -50.0){
             bullets[i].alive = 0;
+          }
         }
-			}
     }
 
     for(j = 0;j < CHICKEN_MAX; j++){
@@ -156,12 +156,12 @@ void onTimer(int id)
       if(j == FLY && chicken[FLY].alive){
         chicken[FLY].xCurr -= 0.01;
         chicken[FLY].yCurr -= 0.005;
-        chicken[FLY].zCurr += 0.07;
+        chicken[FLY].zCurr += 0.05;
         /*ako je otisla dovoljno daleko, i nismo je ubili,vracamo je na pocetak*/
         if(chicken[FLY].zCurr >= 12.0){
           chicken[FLY].xCurr = (float)getRand(-4.5,4.5);
           chicken[FLY].yCurr = 5.5;
-          chicken[FLY].zCurr = -45.0;
+          chicken[FLY].zCurr = -30.0;
         }
       }
 
@@ -174,7 +174,7 @@ void onTimer(int id)
       }
     }
 
-		/*proveravamo da li je metak pogodio neki objekat*/
+    /*proveravamo da li je metak pogodio neki objekat*/
     bulletCollision();
 
     /*parametar kako bi se bara talasala*/
@@ -226,11 +226,6 @@ void onDisplay(void)
   glLoadIdentity();
   gluLookAt(0.0, 1.5, 9.0, 0, 0, 0, 0, 1, 0);
 
-  /*inicijalizacija svetla*/
-  initializeLight();
-  /*Ukljucujemo koriscenje glColor definisanih boja za materijale */
-  glEnable(GL_COLOR_MATERIAL);
-
   /*ispisi proteklo vreme*/
   printTime();
 
@@ -274,8 +269,8 @@ void onDisplay(void)
     for(i=1;i<=chickenIndex;i++){
       /*kokoske u kolima*/
       drawChickenKart(i);
+      /*mrtva kokoska*/
       if(!chickensKart[i].alive && chickensKart[i].activeDeadChicken){
-  			/*mrtva kokoska*/
         dead(chickensKart[i]);
       }
     }

@@ -43,7 +43,7 @@ void initializeChicken(void)
                                 {-7.0,0.5,-8.5}, /*pecaros*/
                                 {-9.5,0.5,-0.5}, /*student*/
                                 {8.5,1.8,-8.0}, /*koka statua*/
-                                {0.0,5.5,-45.0}, /*leteca*/
+                                {0.0,5.5,-30.0}, /*leteca*/
                                 {11.5,1.5,-4.5} /*vozac*/
                            };
 
@@ -153,6 +153,7 @@ void texture(int texId)
       glBindTexture(GL_TEXTURE_2D, tex[texId]);
 
       glBegin(GL_POLYGON);
+             glNormal3f(0,0,1);
 
              glTexCoord2f(0.0f, 0.0f);
              glVertex3f(0.0f, 0.0f,0.0f);

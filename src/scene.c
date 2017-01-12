@@ -9,6 +9,7 @@ void ground(void)
     for(i=-51;i<=6;i+=10){
       /*isprekidana linija*/
       glBegin(GL_POLYGON);
+        glNormal3f(0,1,0);
         glVertex3f(-0.5,0.0001,(float)i+1);
         glVertex3f(0.5,0.0001,(float)i+1);
         glVertex3f(0.5,0.0001,(float)i+6);
@@ -18,6 +19,7 @@ void ground(void)
 
     /*put*/
     glBegin(GL_QUADS);
+      glNormal3f(0,1,0);
       glColor3f(0.24,0.24,0.24);
       glVertex3f(-6,0,-50);
       glVertex3f(-6,0,6);
@@ -43,6 +45,7 @@ void ground(void)
 
     /*zelena povrsina--levo*/
     glBegin(GL_QUADS);
+      glNormal3f(0,1,0);
       glColor3f(0.0,0.8,0.0);
       glVertex3f(-5.0,0.5,6.0);
       glVertex3f(-5.0,0.5,-22.1);
@@ -52,6 +55,7 @@ void ground(void)
 
     /*zelena povrsina--desno*/
     glBegin(GL_QUADS);
+      glNormal3f(0,1,0);
       glColor3f(0.0,0.8,0.0);
       glVertex3f(5.0,0.5,6.0);
       glVertex3f(5.0,0.5,-22.1);
@@ -73,17 +77,26 @@ void drawPuddle(void)
     glScalef(0.05,0.05,0.05);
     /*baru crtamo tako da izgleda kao elipsa*/
     glBegin(GL_POLYGON);
-    glColor3f(0.0,0.305,0.8);
-    int i;
-    for(i=0; i < 360; i++)
-    {
-      float degInRad = i*(DEG2RAD);
-      float u = cos(degInRad)*40.0;
-      float v = sin(degInRad)*55.0;
-      /*y ce nam se menjati po sin, tako da bara lici kao da ima talasice*/
-      glVertex3f(u,function(u,v),v);
-    }
-    glEnd();
+      glColor3f(0.1,0.5,0.9);
+      int i;
+      for(i=0; i < 360; i++)
+      {
+        float degInRad = i*(DEG2RAD);
+        float u = cos(degInRad)*40.0;
+        float v = sin(degInRad)*55.0;
+        float diff_u, diff_v;
+
+        /* Racunamo priblizne vrednosti izvoda funkcije u tacki u, v */
+        diff_u = (function(u + 1, v) - function(u - 1, v)) / 2.0;
+        diff_v = (function(u, v + 1) - function(u, v - 1)) / 2.0;
+
+        /* Postavljamo normalu - vektor normalan na tangentnu ravan */
+        /* Racuna se priblizan vektor normale: */
+        glNormal3f(sin(-diff_u), 1, sin(-diff_v));
+        /*y ce nam se menjati po sin, tako da bara lici kao da ima talasice*/
+        glVertex3f(u,function(u,v),v);
+      }
+      glEnd();
   glPopMatrix();
 }
 
@@ -92,7 +105,7 @@ void drawSun(void)
   /*crtam sunce, ako ga jos nismo upucali*/
   if(sunAlive){
     glPushMatrix();
-      glColor3f(0.9,0.9,0);
+      glColor3f(1.0,1.0,0.0);
       glTranslatef(xSun,ySun,zSun);
       glutSolidSphere(rSun,60,30);
     glPopMatrix();
@@ -161,9 +174,10 @@ void drawStar()
   /*ako smo ubii sunce, crtamo zvezde*/
   if(starAlive){
     int i;
+    glLineWidth(1.0);
     for(i=0;i<5;i++){
       glBegin(GL_LINE_STRIP);
-        glColor3f(0.5,0.5,0.0);
+        glColor3f(0.8,0.8,0.0);
         /*od temena na vrhu,pa ide u smeru kazaljke na satu*/
         glVertex3f(star[i].xCurr,star[i].yCurr,star[i].zCurr);
         glVertex3f(star[i].xCurr+0.3,star[i].yCurr-0.3,star[i].zCurr);
@@ -229,6 +243,16 @@ void drawPumpkin()
 void drawGun(float angleLR,float angleTB)
 {
   glPushMatrix();
+
+    glLineWidth(5.0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glBegin(GL_LINES);
+      glColor4f(0.8,0.0,0.0,0.2);
+      glVertex3f(xGun,yGun,zGun);
+      glVertex3f(xGun-angleLR/10,yGun+angleTB/10,zGun-5);
+    glEnd();
+    glDisable(GL_BLEND);
     glColor3f(0.2,0.2,0.2);
     glTranslatef(xGun,yGun,zGun);
     glRotatef(angleLR,0,1,0);
