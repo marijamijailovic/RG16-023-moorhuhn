@@ -22,6 +22,8 @@ int main(int argc,char *argv[])
   glutReshapeFunc(onReshape);
   glutDisplayFunc(onDisplay);
 
+  glutSetCursor(GLUT_CURSOR_NONE);
+
   /*za inicijalizaciju slicica*/
   initializeImages();
   /*za inicijalizaciju sunca i zvezdi*/
